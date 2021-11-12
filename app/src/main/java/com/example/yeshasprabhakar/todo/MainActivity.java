@@ -39,6 +39,7 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 import static java.util.Calendar.MINUTE;
 
@@ -48,11 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String default_notification_channel_id = "default";
     private static final String TAG = "MainActivity";
     private DatabaseHelper databaseHelper;
-    private ArrayList<DataModel> items;
-    private ItemAdapter itemsAdopter;
     private ListView itemsListView;
     private FloatingActionButton fab;
-    private ToggleButton toggleTheme;
     private SharedPref sharedPreferences;
 
     @Override
@@ -69,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //set custom action bar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
 
         //toggle to change theme and save uer preference
-        toggleTheme = findViewById(R.id.themeActionButton);
+        ToggleButton toggleTheme = findViewById(R.id.themeActionButton);
         if (sharedPreferences.loadNightModeState()) {
             toggleTheme.setChecked(true);
         }
@@ -81,11 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sharedPreferences.setNightModeState(true);
-                } else {
-                    sharedPreferences.setNightModeState(false);
-                }
+                sharedPreferences.setNightModeState(isChecked);
                 restartApp();
             }
         });
@@ -163,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
     //Populate listView with data from database
     private void populateListView() {
         try {
-            items = databaseHelper.getAllData();
-            itemsAdopter = new ItemAdapter(this, items);
+            ArrayList<DataModel> items = databaseHelper.getAllData();
+            ItemAdapter itemsAdopter = new ItemAdapter(this, items);
             itemsListView.setAdapter(itemsAdopter);
             itemsAdopter.notifyDataSetChanged();
             Log.d(TAG, "populateListView: Displaying data in list view");

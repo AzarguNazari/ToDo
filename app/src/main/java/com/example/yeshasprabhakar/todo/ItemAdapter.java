@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class ItemAdapter extends BaseAdapter {
 
-    private Context context;
-    private ArrayList<DataModel> arrayList;
+    private final Context context;
+    private final ArrayList<DataModel> arrayList;
 
     public ItemAdapter(Context context, ArrayList<DataModel> arrayList) {
         super();
